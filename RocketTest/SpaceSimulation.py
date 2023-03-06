@@ -1,28 +1,14 @@
-from PyQt5.QtWidgets import *
-
-from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
-import LoadSystem
-import spacewidget
 import math
-import numpy as np
-import random as rd
+
+from PyQt5.QtWidgets import *
+import LoadSystem
 from matplotlib.animation import FuncAnimation
-import sympy as sp
-import pprint
-import time
-import scipy.io as io
 import pickle
 from Planetary import *
-#from matplotlib.backends.backend_qt5agg import FigureCanvas
-
-from matplotlib.figure import Figure
 
 
 class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
     def __init__(self):
-        #global PS
-        #FileName = ""
-        #PS = "Null"
         # Это здесь нужно для доступа к переменным, методам
         # и т.д. в файле design.py
         QMainWindow.__init__(self)
@@ -30,6 +16,9 @@ class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
         self.setupUi(self)  # Это нужно для инициализации нашего дизайна
         self.LoadButton.clicked.connect(self.LoadButtonClicked)
         self.StartButton.clicked.connect(self.StartButtonClicked)
+        self.EngineBar.setValue(100)
+        self.AngleBar.setValue(314)
+
 
     def LoadButtonClicked(self):
         global PS
@@ -38,8 +27,8 @@ class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
         with open(Filename, 'rb') as file:
             PS = pickle.load(file)['PS']
 
+
     def StartButtonClicked(self):
-        print(1)
 
         self.SpaceWidget.canvas.axes.clear()
         global PS, Xs, Ys, VXs, VYs, PS, X_r, Y_r, VX_r, VY_r, Phi_r, F_r
@@ -47,17 +36,14 @@ class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
 
         with open(Filename, 'rb') as file:
             PS = pickle.load(file)['PS']
-        print(PS)
         if PS == 'Null':
             print("Вселенная не создана")
         else:
-            print(2)
             PS.GetEquationsOfMovement()
-            print(3)
             self.SpaceWidget.canvas.axes.axis('equal')
             Lim = float(self.Lim_field.text())
             self.SpaceWidget.canvas.axes.set(xlim=[-Lim, Lim], ylim=[-Lim, Lim])
-            print(4)
+            # self.SpaceWidget.canvas.axes.set(xlim=[50, 60], ylim=[-2, 20])
             if PS.rocket != 'Null':
                 X_r = PS.rocket.X
                 Y_r = PS.rocket.Y
@@ -77,12 +63,10 @@ class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
 
             PS.DrawSystem(self.SpaceWidget.canvas.axes)
             self.SpaceWidget.canvas.show()
-            print(5)
             dt = float(self.Dt_field.text())
 
             Phi_r = 0
             F_r = 0
-            print(6)
             def KadrPlanet(i):
                 global Xs, Ys, VXs, VYs, PS, X_r, Y_r, VX_r, VY_r, Phi_r, F_r
 
@@ -112,8 +96,18 @@ class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
                     planet.Vy = vy
 
                 if PS.rocket != 'Null':
-                    Phi_r = 3*3.14/2 - self.AngleBar.value()/100
-                    F_r = (100 - self.EngineBar.value())/10
+                    for planet in PS.Planets:
+                        if planet.name=="Earth":
+                            eX = planet.X
+                            eY = planet.Y
+                        if planet.name=="moon":
+                            mX = planet.X
+                            mY = planet.Y
+                            mR = planet.Rc
+                    # print(((PS.rocket.X-mX)**2+(PS.rocket.Y-mY)**2)**(1/2)-mR)
+                    # Phi_r = 3*3.14/2 - self.AngleBar.value()/100
+                    F_r = (100-self.EngineBar.value())*13000
+                    Phi_r = -math.pi/2 + math.atan2(eY-PS.rocket.Y, eX-PS.rocket.X)
                     res = PS.EquationsOfRocket(Xs, Ys, VXs, VYs, X_r, Y_r, VX_r, VY_r, Phi_r, F_r)
                     k1_dX_r, k1_dY_r, k1_dVx_r, k1_dVy_r = np.array(res[0]), np.array(res[1]), np.array(
                         res[2]), np.array(res[3])
@@ -156,7 +150,7 @@ class ExampleApp(QMainWindow, LoadSystem.Ui_MainWindow):
                                                                                                           PS.rocket.Gf]
                 else:
                     return [planet.Gp for planet in PS.Planets] + [planet.Gt for planet in PS.Planets]
-            print(7)
+
             fig = self.SpaceWidget.canvas.figure
             Animation1 = FuncAnimation(fig, KadrPlanet, interval=dt * 1000, blit=True)
 

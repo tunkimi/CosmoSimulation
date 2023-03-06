@@ -36,17 +36,17 @@ class Planet:
         self.Atm_x = Ra*np.cos(phi)
         self.Atm_y = Ra*np.sin(phi)
 
-    def DrawPlanet(self,axes):
-        self.Gp = axes.plot(self.X + self.Circ_x, self.Y + self.Circ_y, color=self.C_p)[0]
-        self.Gt = axes.plot(self.TraceX, self.TraceY, ':', color=self.C_p)[0]
+    def DrawPlanet(self,axes, Earth):
+        self.Gp = axes.plot(self.X - Earth[0] + self.Circ_x, self.Y - Earth[1] + self.Circ_y, color=self.C_p)[0]
+        self.Gt = axes.plot(self.TraceX - Earth[0], self.TraceY - Earth[1], ':', color=self.C_p)[0]
 
         #self.Ga = axes.plot(self.X + self.Atm_x, self.Y + self.Atm_y, color = self.C_a)[0]
 
-    def ReplacePlanet(self,axes):
-        self.Gp.set_data(self.X + self.Circ_x, self.Y + self.Circ_y)
+    def ReplacePlanet(self, axes, Earth):
+        self.Gp.set_data(self.X - Earth[0] + self.Circ_x, self.Y - Earth[1] + self.Circ_y)
 
-        self.TraceX = np.append(self.TraceX, self.X)
-        self.TraceY = np.append(self.TraceY, self.Y)
+        self.TraceX = np.append(self.TraceX, self.X - Earth[0])
+        self.TraceY = np.append(self.TraceY, self.Y - Earth[1])
 
         self.Gt.set_data(self.TraceX, self.TraceY)
         #self.Ga.set_data(self.X + self.Atm_x, self.Y + self.Atm_y)
@@ -84,52 +84,62 @@ class Rocket:
         self.Flame_x = np.array([ 0, -0.1, -0.2, -0.15, -0.25, -0.15, -0.2, -0.1, 0])
         self.Flame_y = np.array([ 0.09, 0.1, 0.09, 0.05, 0, -0.05, -0.09, -0.1,  -0.09])
 
-    def DrawRocket(self,axes):
+    def DrawRocket(self,axes, Earth):
         RShapeX, RShapeY = Rot2D(self.Shape_x, self.Shape_y, self.Phi)
         RFlameX, RFlameY = Rot2D((self.Flame_x * self.F - 0.45) * self.L, self.Flame_y * self.L, self.Phi)
-        self.Gr = axes.plot(self.X + RShapeX, self.Y + RShapeY, color=self.C_r)[0]
-        self.Gt = axes.plot(self.TraceX, self.TraceY, ':', color=self.C_r)[0]
-        self.Gf = axes.plot(self.X + RFlameX, self.Y + RFlameY, color=self.C_f)[0]
+        self.Gr = axes.plot(self.X - Earth[0] + RShapeX, self.Y - Earth[1] + RShapeY, color=self.C_r)[0]
+        self.Gt = axes.plot(self.TraceX - Earth[0], self.TraceY - Earth[1], ':', color=self.C_r)[0]
+        self.Gf = axes.plot(self.X - Earth[0] + RFlameX, self.Y - Earth[1] + RFlameY, color=self.C_f)[0]
 
 
 
         #self.Ga = axes.plot(self.X + self.Atm_x, self.Y + self.Atm_y, color = self.C_a)[0]
 
-    def ReplaceRocket(self,axes):
+    def ReplaceRocket(self,axes, Earth):
         RShapeX, RShapeY = Rot2D(self.Shape_x, self.Shape_y, self.Phi)
         RFlameX, RFlameY = Rot2D((self.Flame_x * self.F - 0.45) * self.L, self.Flame_y * self.L, self.Phi)
-        self.Gr.set_data(self.X + RShapeX, self.Y + RShapeY)
-        self.Gf.set_data(self.X + RFlameX, self.Y + RFlameY)
+        self.Gr.set_data(self.X - Earth[0] + RShapeX, self.Y - Earth[1] + RShapeY)
+        self.Gf.set_data(self.X - Earth[0] + RFlameX, self.Y - Earth[1] + RFlameY)
 
-        self.TraceX = np.append(self.TraceX, self.X)
-        self.TraceY = np.append(self.TraceY, self.Y)
+        self.TraceX = np.append(self.TraceX, self.X - Earth[0])
+        self.TraceY = np.append(self.TraceY, self.Y - Earth[1])
 
         self.Gt.set_data(self.TraceX, self.TraceY)
         #self.Ga.set_data(self.X + self.Atm_x, self.Y + self.Atm_y)
 
 
 class PlanetSystem:
-    def __init__(self, Planets, Gamma = 1):
+    def __init__(self, Planets, omega = 1/5400, r0 = 6771000, Gamma = 6.6743015*(10**-11)):
         self.Planets = Planets
         self.EquationsOfMovement = 'Null'
         self.Gamma = Gamma
         self.EquationsOfRocket = 'Null'
         self.rocket = 'Null'
+        self.Omega = omega
+        self.R0 = r0
 
     def AddRocket(self, rocket):
         self.rocket = rocket
 
     def DrawSystem(self, axes):
         for planet in self.Planets:
-            planet.DrawPlanet(axes)
+            if planet.name=="Earth":
+                eX = planet.X
+                eY = planet.Y
+        for planet in self.Planets:
+            planet.DrawPlanet(axes, [eX, eY])
         if self.rocket != 'Null':
-            self.rocket.DrawRocket(axes)
+            self.rocket.DrawRocket(axes, [eX, eY])
 
     def ReplaceSystem(self, axes):
         for planet in self.Planets:
-            planet.ReplacePlanet(axes)
+            if planet.name=="Earth":
+                eX = planet.X
+                eY = planet.Y
+        for planet in self.Planets:
+            planet.ReplacePlanet(axes, [eX, eY])
         if self.rocket != 'Null':
-            self.rocket.ReplaceRocket(axes)
+            self.rocket.ReplaceRocket(axes, [eX, eY])
 
     def GetEquationsOfMovement(self):
         X = sp.symbols('x:' + str(len(self.Planets)))
@@ -145,8 +155,8 @@ class PlanetSystem:
         for i in range(len(X)):
             for j in range(len(X)):
                 if i != j:
-                    DDx[i] += ((self.Gamma * self.Planets[j].m * (X[j] - X[i])) / (((X[i] - X[j]) ** 2 + (Y[i] - Y[j]) ** 2) ** (3 / 2)))
-                    DDy[i] += ((self.Gamma * self.Planets[j].m * (Y[j] - Y[i])) / (((X[i] - X[j]) ** 2 + (Y[i] - Y[j]) ** 2) ** (3 / 2)))
+                    DDx[i] += (self.Gamma * self.Planets[j].m / self.Omega**2 / self.R0**3) * (X[j] - X[i]) / (((X[i] - X[j]) ** 2 + (Y[i] - Y[j]) ** 2) ** (3 / 2))
+                    DDy[i] += (self.Gamma * self.Planets[j].m / self.Omega**2 / self.R0**3) * (Y[j] - Y[i]) / (((X[i] - X[j]) ** 2 + (Y[i] - Y[j]) ** 2) ** (3 / 2))
 
         self.EquationsOfMovement = sp.lambdify([X, Y, VX, VY], [Dx, Dy, DDx, DDy], 'numpy')
         if self.rocket != 'Null':
@@ -164,13 +174,13 @@ class PlanetSystem:
             DDy_r = 0
 
             for j in range(len(X)):
-                DDx_r += ((self.Gamma * self.Planets[j].m * (X[j] - X_r)) / (
-                    ((X_r - X[j]) ** 2 + (Y_r - Y[j]) ** 2) ** (3 / 2)))
-                DDy_r += ((self.Gamma * self.Planets[j].m * (Y[j] - Y_r)) / (
-                    ((X_r - X[j]) ** 2 + (Y_r - Y[j]) ** 2) ** (3 / 2)))
+                DDx_r += (self.Gamma * self.Planets[j].m / self.Omega**2 / self.R0**3) * (X[j] - X_r) / (
+                    ((X_r - X[j]) ** 2 + (Y_r - Y[j]) ** 2) ** (3 / 2))
+                DDy_r += (self.Gamma * self.Planets[j].m / self.Omega**2 / self.R0**3) * (Y[j] - Y_r) / (
+                    ((X_r - X[j]) ** 2 + (Y_r - Y[j]) ** 2) ** (3 / 2))
 
-            DDx_r += F_r * sp.cos(Phi_r)/self.rocket.m
-            DDy_r += F_r * sp.sin(Phi_r)/self.rocket.m
+            DDx_r += F_r * sp.cos(Phi_r)/self.rocket.m / self.Omega**2 / self.R0
+            DDy_r += F_r * sp.sin(Phi_r)/self.rocket.m / self.Omega**2 / self.R0
 
             self.EquationsOfRocket = sp.lambdify([X, Y, VX, VY, X_r, Y_r, VX_r, VY_r, Phi_r, F_r],
                                                  [Dx_r, Dy_r, DDx_r, DDy_r], 'numpy')
