@@ -24,9 +24,9 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>650</y>
+      <y>660</y>
       <width>181</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -45,9 +45,9 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>20</y>
+      <y>60</y>
       <width>181</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -62,13 +62,13 @@
      <string>Load</string>
     </property>
    </widget>
-   <widget class="QScrollBar" name="verticalScrollBar">
+   <widget class="QScrollBar" name="EngineBar">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>230</y>
+      <y>280</y>
       <width>31</width>
-      <height>411</height>
+      <height>371</height>
      </rect>
     </property>
     <property name="maximum">
@@ -81,13 +81,13 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QDial" name="wheel">
+   <widget class="QDial" name="AngleBar">
     <property name="geometry">
      <rect>
       <x>930</x>
-      <y>230</y>
+      <y>280</y>
       <width>131</width>
-      <height>411</height>
+      <height>371</height>
      </rect>
     </property>
     <property name="pageStep">
@@ -97,31 +97,45 @@
      <number>50</number>
     </property>
    </widget>
-   <widget class="QTextEdit" name="TextDt">
+   <widget class="QTextEdit" name="Dt_field">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>100</y>
+      <y>150</y>
       <width>181</width>
       <height>41</height>
      </rect>
     </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Times New Roman'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0.01&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
    </widget>
-   <widget class="QTextEdit" name="TextTimeLimit">
+   <widget class="QTextEdit" name="Lim_field">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>180</y>
+      <y>230</y>
       <width>181</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Times New Roman'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;70&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>80</y>
+      <y>130</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -134,13 +148,13 @@
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>150</y>
+      <y>200</y>
       <width>181</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Time limit</string>
+     <string>Window limit</string>
     </property>
    </widget>
    <widget class="SpaceWidget" name="SpaceWidget" native="true">
@@ -151,6 +165,49 @@
       <width>871</width>
       <height>681</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Load1Button">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>100</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Preset 1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Load2Button">
+    <property name="geometry">
+     <rect>
+      <x>984</x>
+      <y>100</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Preset 2</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="Filename_field">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>10</y>
+      <width>181</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Times New Roman'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Universe&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>

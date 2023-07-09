@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import *
-
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib import pyplot as plt
 
 from matplotlib.figure import Figure
+
 
 
 class SpaceWidget(QWidget):
